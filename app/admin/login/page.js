@@ -9,53 +9,47 @@ import { Label } from '@/components/ui/label'
 import { Lock, Mail, ArrowLeft, ShieldCheck, Eye, EyeOff } from 'lucide-react'
 import Logo from '@/components/site/Logo'
 import { toast } from 'sonner'
+import { useAuth } from '@/lib/auth-context'
 
 function AdminLogin() {
   const router = useRouter()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    // Mock login (faza e mockup-it)
-    setTimeout(() => {
+    try {
+      await login(email, password)
+      toast.success('Mirëse erdhët!')
+      router.push('/admin/dashboard')
+    } catch (err) {
+      toast.error(err.message || 'Hyrja dështoi')
+    } finally {
       setLoading(false)
-      if (email && password) {
-        toast.success('Mirëse erdhët!')
-        router.push('/admin/dashboard')
-      } else {
-        toast.error('Plotësoni të dhënat')
-      }
-    }, 700)
+    }
   }
 
   return (
     <div className="min-h-screen flex bg-neutral-50">
-      {/* Left side - branding */}
       <div className="hidden lg:flex lg:w-1/2 konsum-gradient relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img src="https://images.pexels.com/photos/5498225/pexels-photo-5498225.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="" className="w-full h-full object-cover"/>
         </div>
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
-          <Logo size="lg" white/>
+          <div className="bg-white inline-block p-2 rounded-lg w-fit"><Logo size="md"/></div>
           <div className="space-y-6">
             <ShieldCheck className="h-16 w-16 text-[#20A33A]"/>
             <h2 className="text-4xl font-black leading-tight">Panel Administrimi i Konsumit</h2>
             <p className="text-white/90 text-lg max-w-md">Menaxho ofertat, lokacionet, përmbajtjen e faqes dhe gjenero materiale marketingu – të gjitha në një vend.</p>
-            <div className="flex gap-6 pt-4 text-sm">
-              <div><div className="text-3xl font-black text-[#20A33A]">24</div><div>Oferta aktive</div></div>
-              <div><div className="text-3xl font-black text-[#20A33A]">12</div><div>Lokacione</div></div>
-              <div><div className="text-3xl font-black text-[#20A33A]">156</div><div>Produkte</div></div>
-            </div>
           </div>
-          <p className="text-xs text-white/60">© {new Date().getFullYear()} Konsum. Të gjitha të drejtat e rezervuara.</p>
+          <p className="text-xs text-white/60">© {new Date().getFullYear()} Konsum Super Market</p>
         </div>
       </div>
 
-      {/* Right side - form */}
       <div className="flex-1 flex flex-col">
         <div className="p-6">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#EF7B22]">
@@ -80,7 +74,6 @@ function AdminLogin() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="font-semibold">Fjalëkalimi</Label>
-                  <a href="#" className="text-xs text-[#EF7B22] hover:underline">Keni harruar?</a>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
@@ -97,8 +90,8 @@ function AdminLogin() {
               </Button>
             </form>
 
-            <div className="mt-8 p-4 rounded-lg bg-neutral-100 text-xs text-muted-foreground">
-              <b className="text-foreground">Mockup demo:</b> Përdorni çfarëdo email/password për të parë dashboardin. Autentikimi i vërtetë me Supabase do të shtohet pas miratimit.
+            <div className="mt-8 p-4 rounded-lg bg-orange-50 border border-orange-200 text-xs text-orange-900">
+              <b>Demo:</b> Përdorni email-in dhe fjalëkalimin që keni vendosur në cilësimet.
             </div>
           </div>
         </div>

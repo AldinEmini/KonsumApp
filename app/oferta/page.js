@@ -1,45 +1,54 @@
 'use client'
 
-import { useState } from 'react'
-import { Search, Filter, X, ArrowDownUp } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Search, Filter, X, Loader2 } from 'lucide-react'
 import Header from '@/components/site/Header'
 import Footer from '@/components/site/Footer'
 import OfferCard from '@/components/site/OfferCard'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { OFFERS, CATEGORIES } from '@/lib/mockData'
+import { CATEGORIES } from '@/lib/mockData'
 
 function OfertaPage() {
   const [search, setSearch] = useState('')
   const [cat, setCat] = useState('te-gjitha')
   const [sort, setSort] = useState('discount')
+  const [offers, setOffers] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  let list = OFFERS.filter(o => (cat === 'te-gjitha' || o.category === cat) && (!search || o.name.toLowerCase().includes(search.toLowerCase())))
+  useEffect(() => {
+    fetch('/api/offers').then(r => r.json()).then(d => {
+      setOffers(d.offers || [])
+      setLoading(false)
+    })
+  }, [])
+
+  let list = offers.filter(o => (cat === 'te-gjitha' || o.category === cat) && (!search || o.name.toLowerCase().includes(search.toLowerCase())))
   if (sort === 'discount') list = [...list].sort((a,b) => (b.oldPrice-b.newPrice)/b.oldPrice - (a.oldPrice-a.newPrice)/a.oldPrice)
   if (sort === 'price-low') list = [...list].sort((a,b) => a.newPrice - b.newPrice)
   if (sort === 'price-high') list = [...list].sort((a,b) => b.newPrice - a.newPrice)
   if (sort === 'name') list = [...list].sort((a,b) => a.name.localeCompare(b.name))
 
+  const maxDiscount = offers.length ? Math.max(...offers.map(o => Math.round(((o.oldPrice - o.newPrice)/o.oldPrice)*100))) : 0
+
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header/>
 
-      {/* Page header */}
       <section className="konsum-gradient text-white py-12 md:py-16">
         <div className="container">
-          <Badge className="bg-[#20A33A] text-white font-bold mb-3">JAVA AKTUALE</Badge>
+          <Badge className="bg-[#20A33A] text-white font-bold mb-3 hover:bg-[#20A33A]">JAVA AKTUALE</Badge>
           <h1 className="text-4xl md:text-6xl font-black">Ofertat Javore</h1>
           <p className="text-white/90 mt-3 text-lg max-w-2xl">Të gjitha ofertat aktive, të përzgjedhura me kujdes. Vlefshmëria deri të dielen.</p>
           <div className="flex flex-wrap gap-6 mt-6 text-white/90 text-sm">
-            <span><b className="text-[#20A33A] text-2xl">{OFFERS.length}</b> oferta aktive</span>
-            <span><b className="text-[#20A33A] text-2xl">8</b> kategori</span>
-            <span><b className="text-[#20A33A] text-2xl">-45%</b> zbritja maksimale</span>
+            <span><b className="text-white text-2xl">{offers.length}</b> oferta aktive</span>
+            <span><b className="text-white text-2xl">{CATEGORIES.length - 1}</b> kategori</span>
+            <span><b className="text-white text-2xl">-{maxDiscount}%</b> zbritja maksimale</span>
           </div>
         </div>
       </section>
 
-      {/* Filters bar */}
       <section className="bg-white border-b sticky top-[80px] md:top-[128px] z-30 shadow-sm">
         <div className="container py-4 space-y-3">
           <div className="flex flex-col md:flex-row gap-3">
@@ -51,8 +60,8 @@ function OfertaPage() {
             <select value={sort} onChange={e=>setSort(e.target.value)}
               className="h-11 px-4 rounded-md border bg-white text-sm font-medium">
               <option value="discount">Zbritja më e madhe</option>
-              <option value="price-low">Çmimi: i ultë → i lartë</option>
-              <option value="price-high">Çmimi: i lartë → i ultë</option>
+              <option value="price-low">Çmimi: i ulët → i lartë</option>
+              <option value="price-high">Çmimi: i lartë → i ulët</option>
               <option value="name">Emri A-Z</option>
             </select>
             {(search || cat !== 'te-gjitha') && (
@@ -76,18 +85,23 @@ function OfertaPage() {
         </div>
       </section>
 
-      {/* Grid */}
       <section className="py-8 md:py-10">
         <div className="container">
-          <p className="text-sm text-muted-foreground mb-5">U gjetën <b>{list.length}</b> oferta</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-            {list.map(o => <OfferCard key={o.id} offer={o}/>)}
-          </div>
-          {list.length === 0 && (
-            <div className="text-center py-20">
-              <Filter className="h-12 w-12 mx-auto text-muted-foreground mb-3"/>
-              <p className="text-muted-foreground">Asnjë ofertë nuk përputhet me kërkimin tuaj.</p>
-            </div>
+          {loading ? (
+            <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-[#EF7B22]"/></div>
+          ) : (
+            <>
+              <p className="text-sm text-muted-foreground mb-5">U gjetën <b>{list.length}</b> oferta</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+                {list.map(o => <OfferCard key={o.id} offer={o}/>)}
+              </div>
+              {list.length === 0 && (
+                <div className="text-center py-20">
+                  <Filter className="h-12 w-12 mx-auto text-muted-foreground mb-3"/>
+                  <p className="text-muted-foreground">Asnjë ofertë nuk përputhet me kërkimin tuaj.</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
