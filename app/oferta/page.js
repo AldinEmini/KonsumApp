@@ -1,0 +1,100 @@
+'use client'
+
+import { useState } from 'react'
+import { Search, Filter, X, ArrowDownUp } from 'lucide-react'
+import Header from '@/components/site/Header'
+import Footer from '@/components/site/Footer'
+import OfferCard from '@/components/site/OfferCard'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { OFFERS, CATEGORIES } from '@/lib/mockData'
+
+function OfertaPage() {
+  const [search, setSearch] = useState('')
+  const [cat, setCat] = useState('te-gjitha')
+  const [sort, setSort] = useState('discount')
+
+  let list = OFFERS.filter(o => (cat === 'te-gjitha' || o.category === cat) && (!search || o.name.toLowerCase().includes(search.toLowerCase())))
+  if (sort === 'discount') list = [...list].sort((a,b) => (b.oldPrice-b.newPrice)/b.oldPrice - (a.oldPrice-a.newPrice)/a.oldPrice)
+  if (sort === 'price-low') list = [...list].sort((a,b) => a.newPrice - b.newPrice)
+  if (sort === 'price-high') list = [...list].sort((a,b) => b.newPrice - a.newPrice)
+  if (sort === 'name') list = [...list].sort((a,b) => a.name.localeCompare(b.name))
+
+  return (
+    <div className="min-h-screen bg-neutral-50">
+      <Header/>
+
+      {/* Page header */}
+      <section className="konsum-gradient text-white py-12 md:py-16">
+        <div className="container">
+          <Badge className="bg-[#FFC72C] text-[#E30613] font-bold mb-3">JAVA AKTUALE</Badge>
+          <h1 className="text-4xl md:text-6xl font-black">Ofertat Javore</h1>
+          <p className="text-white/90 mt-3 text-lg max-w-2xl">Të gjitha ofertat aktive, të përzgjedhura me kujdes. Vlefshmëria deri të dielen.</p>
+          <div className="flex flex-wrap gap-6 mt-6 text-white/90 text-sm">
+            <span><b className="text-[#FFC72C] text-2xl">{OFFERS.length}</b> oferta aktive</span>
+            <span><b className="text-[#FFC72C] text-2xl">8</b> kategori</span>
+            <span><b className="text-[#FFC72C] text-2xl">-45%</b> zbritja maksimale</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Filters bar */}
+      <section className="bg-white border-b sticky top-[80px] md:top-[128px] z-30 shadow-sm">
+        <div className="container py-4 space-y-3">
+          <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+              <Input value={search} onChange={e=>setSearch(e.target.value)}
+                placeholder="Kërko ofertat..." className="pl-10 h-11"/>
+            </div>
+            <select value={sort} onChange={e=>setSort(e.target.value)}
+              className="h-11 px-4 rounded-md border bg-white text-sm font-medium">
+              <option value="discount">Zbritja më e madhe</option>
+              <option value="price-low">Çmimi: i ultë → i lartë</option>
+              <option value="price-high">Çmimi: i lartë → i ultë</option>
+              <option value="name">Emri A-Z</option>
+            </select>
+            {(search || cat !== 'te-gjitha') && (
+              <Button variant="outline" onClick={() => {setSearch(''); setCat('te-gjitha')}}>
+                <X className="h-4 w-4 mr-1"/> Pastro
+              </Button>
+            )}
+          </div>
+          <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+            {CATEGORIES.map(c => (
+              <button key={c.slug} onClick={() => setCat(c.slug)}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-semibold text-xs border transition ${
+                  cat === c.slug
+                    ? 'bg-[#E30613] border-[#E30613] text-white'
+                    : 'bg-white border-neutral-200 hover:border-[#E30613]'
+                }`}>
+                <span>{c.icon}</span> {c.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Grid */}
+      <section className="py-8 md:py-10">
+        <div className="container">
+          <p className="text-sm text-muted-foreground mb-5">U gjetën <b>{list.length}</b> oferta</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+            {list.map(o => <OfferCard key={o.id} offer={o}/>)}
+          </div>
+          {list.length === 0 && (
+            <div className="text-center py-20">
+              <Filter className="h-12 w-12 mx-auto text-muted-foreground mb-3"/>
+              <p className="text-muted-foreground">Asnjë ofertë nuk përputhet me kërkimin tuaj.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <Footer/>
+    </div>
+  )
+}
+
+export default OfertaPage
