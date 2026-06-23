@@ -23,7 +23,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm">
       {/* Top bar */}
-      <div className="bg-[#E30613] text-white text-xs">
+      <div className="bg-[#EF7B22] text-white text-xs">
         <div className="container flex items-center justify-between h-9">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5"><Phone className="h-3 w-3"/> {SITE.phone}</span>
@@ -44,12 +44,12 @@ export default function Header() {
         {/* Search */}
         <div className="hidden md:flex flex-1 max-w-xl relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Kërko ofertat..." className="pl-10 h-11 bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-[#E30613]" />
+          <Input placeholder="Kërko ofertat..." className="pl-10 h-11 bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-[#EF7B22]" />
         </div>
 
         {/* Right actions */}
         <div className="flex items-center gap-2">
-          <Button asChild className="hidden md:inline-flex bg-[#FFC72C] text-[#E30613] hover:bg-[#FFB800] font-bold">
+          <Button asChild className="hidden md:inline-flex bg-[#20A33A] hover:bg-[#178A30] text-white font-bold">
             <Link href="/oferta"><ShoppingBag className="h-4 w-4 mr-2"/> Ofertat</Link>
           </Button>
           <button onClick={() => setOpen(!open)} className="md:hidden p-2">
@@ -65,8 +65,8 @@ export default function Header() {
             <Link key={n.href} href={n.href}
               className={`px-4 py-2 text-sm font-semibold rounded-md transition ${
                 pathname === n.href
-                  ? 'text-[#E30613] bg-red-50'
-                  : 'text-foreground hover:text-[#E30613] hover:bg-muted'
+                  ? 'text-[#EF7B22] bg-orange-50'
+                  : 'text-foreground hover:text-[#EF7B22] hover:bg-muted'
               }`}>
               {n.label}
             </Link>
@@ -85,7 +85,7 @@ export default function Header() {
             {NAV.map(n => (
               <Link key={n.href} href={n.href} onClick={() => setOpen(false)}
                 className={`block px-3 py-2.5 rounded-md text-sm font-semibold ${
-                  pathname === n.href ? 'text-[#E30613] bg-red-50' : 'text-foreground hover:bg-muted'
+                  pathname === n.href ? 'text-[#EF7B22] bg-orange-50' : 'text-foreground hover:bg-muted'
                 }`}>
                 {n.label}
               </Link>

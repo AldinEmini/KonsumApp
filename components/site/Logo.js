@@ -1,14 +1,19 @@
-export default function Logo({ size = 'md', white = false }) {
+import { LOGO } from '@/lib/mockData'
+
+export default function Logo({ size = 'md', variant = 'mascot', className = '' }) {
   const sizes = {
-    sm: 'text-xl',
-    md: 'text-2xl',
-    lg: 'text-4xl',
-    xl: 'text-6xl',
+    sm: 'h-9',
+    md: 'h-12',
+    lg: 'h-20',
+    xl: 'h-32',
   }
+  const src = variant === 'full' ? LOGO.full : LOGO.mascot
   return (
-    <div className={`inline-flex items-center gap-1 font-black tracking-tight ${sizes[size]}`}>
-      <span className={white ? 'text-white' : 'text-[#E30613]'}>KON</span>
-      <span className={`px-1.5 py-0.5 rounded ${white ? 'bg-white text-[#E30613]' : 'bg-[#FFC72C] text-[#E30613]'}`}>SUM</span>
-    </div>
+    <img
+      src={src}
+      alt="Konsum Super Market"
+      className={`${sizes[size]} w-auto object-contain ${className}`}
+      draggable={false}
+    />
   )
 }

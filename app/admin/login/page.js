@@ -37,18 +37,18 @@ function AdminLogin() {
       {/* Left side - branding */}
       <div className="hidden lg:flex lg:w-1/2 konsum-gradient relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
-          <img src="https://images.unsplash.com/photo-1642582034088-860e69149ef4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwyfHxzdXBlcm1hcmtldHxlbnwwfHx8cmVkfDE3ODIxNzc4NTF8MA&ixlib=rb-4.1.0&q=85" alt="" className="w-full h-full object-cover"/>
+          <img src="https://images.pexels.com/photos/5498225/pexels-photo-5498225.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="" className="w-full h-full object-cover"/>
         </div>
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
           <Logo size="lg" white/>
           <div className="space-y-6">
-            <ShieldCheck className="h-16 w-16 text-[#FFC72C]"/>
+            <ShieldCheck className="h-16 w-16 text-[#20A33A]"/>
             <h2 className="text-4xl font-black leading-tight">Panel Administrimi i Konsumit</h2>
             <p className="text-white/90 text-lg max-w-md">Menaxho ofertat, lokacionet, përmbajtjen e faqes dhe gjenero materiale marketingu – të gjitha në një vend.</p>
             <div className="flex gap-6 pt-4 text-sm">
-              <div><div className="text-3xl font-black text-[#FFC72C]">24</div><div>Oferta aktive</div></div>
-              <div><div className="text-3xl font-black text-[#FFC72C]">12</div><div>Lokacione</div></div>
-              <div><div className="text-3xl font-black text-[#FFC72C]">156</div><div>Produkte</div></div>
+              <div><div className="text-3xl font-black text-[#20A33A]">24</div><div>Oferta aktive</div></div>
+              <div><div className="text-3xl font-black text-[#20A33A]">12</div><div>Lokacione</div></div>
+              <div><div className="text-3xl font-black text-[#20A33A]">156</div><div>Produkte</div></div>
             </div>
           </div>
           <p className="text-xs text-white/60">© {new Date().getFullYear()} Konsum. Të gjitha të drejtat e rezervuara.</p>
@@ -58,7 +58,7 @@ function AdminLogin() {
       {/* Right side - form */}
       <div className="flex-1 flex flex-col">
         <div className="p-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#E30613]">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#EF7B22]">
             <ArrowLeft className="h-4 w-4"/> Kthehu në faqe
           </Link>
         </div>
@@ -80,7 +80,7 @@ function AdminLogin() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="font-semibold">Fjalëkalimi</Label>
-                  <a href="#" className="text-xs text-[#E30613] hover:underline">Keni harruar?</a>
+                  <a href="#" className="text-xs text-[#EF7B22] hover:underline">Keni harruar?</a>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
@@ -92,7 +92,7 @@ function AdminLogin() {
                 </div>
               </div>
               <Button type="submit" disabled={loading} size="lg"
-                className="w-full bg-[#E30613] hover:bg-[#b8040f] text-white font-bold h-12 text-base">
+                className="w-full bg-[#EF7B22] hover:bg-[#C45F10] text-white font-bold h-12 text-base">
                 {loading ? 'Duke u kyqur...' : 'Kyqu në Panel'}
               </Button>
             </form>

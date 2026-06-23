@@ -28,13 +28,13 @@ function OfertaPage() {
       {/* Page header */}
       <section className="konsum-gradient text-white py-12 md:py-16">
         <div className="container">
-          <Badge className="bg-[#FFC72C] text-[#E30613] font-bold mb-3">JAVA AKTUALE</Badge>
+          <Badge className="bg-[#20A33A] text-white font-bold mb-3">JAVA AKTUALE</Badge>
           <h1 className="text-4xl md:text-6xl font-black">Ofertat Javore</h1>
           <p className="text-white/90 mt-3 text-lg max-w-2xl">Të gjitha ofertat aktive, të përzgjedhura me kujdes. Vlefshmëria deri të dielen.</p>
           <div className="flex flex-wrap gap-6 mt-6 text-white/90 text-sm">
-            <span><b className="text-[#FFC72C] text-2xl">{OFFERS.length}</b> oferta aktive</span>
-            <span><b className="text-[#FFC72C] text-2xl">8</b> kategori</span>
-            <span><b className="text-[#FFC72C] text-2xl">-45%</b> zbritja maksimale</span>
+            <span><b className="text-[#20A33A] text-2xl">{OFFERS.length}</b> oferta aktive</span>
+            <span><b className="text-[#20A33A] text-2xl">8</b> kategori</span>
+            <span><b className="text-[#20A33A] text-2xl">-45%</b> zbritja maksimale</span>
           </div>
         </div>
       </section>
@@ -66,8 +66,8 @@ function OfertaPage() {
               <button key={c.slug} onClick={() => setCat(c.slug)}
                 className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-semibold text-xs border transition ${
                   cat === c.slug
-                    ? 'bg-[#E30613] border-[#E30613] text-white'
-                    : 'bg-white border-neutral-200 hover:border-[#E30613]'
+                    ? 'bg-[#EF7B22] border-[#EF7B22] text-white'
+                    : 'bg-white border-neutral-200 hover:border-[#EF7B22]'
                 }`}>
                 <span>{c.icon}</span> {c.name}
               </button>

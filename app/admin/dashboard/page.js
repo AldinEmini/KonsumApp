@@ -41,12 +41,12 @@ function AdminDashboard() {
             <button key={n.key} onClick={() => setTab(n.key)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition ${
                 tab === n.key
-                  ? 'bg-[#E30613] text-white shadow'
+                  ? 'bg-[#EF7B22] text-white shadow'
                   : 'text-neutral-700 hover:bg-neutral-100'
               }`}>
               <span className="flex items-center gap-3"><n.icon className="h-4 w-4"/> {n.label}</span>
               {n.badge && (
-                <span className={`text-xs px-2 py-0.5 rounded-full ${tab === n.key ? 'bg-white text-[#E30613]' : 'bg-neutral-200 text-neutral-700'}`}>{n.badge}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${tab === n.key ? 'bg-white text-[#EF7B22]' : 'bg-neutral-200 text-neutral-700'}`}>{n.badge}</span>
               )}
             </button>
           ))}
@@ -67,12 +67,12 @@ function AdminDashboard() {
             <Input placeholder="Kërko..." className="pl-10 h-10 bg-neutral-50 border-0"/>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/" target="_blank" className="text-sm text-muted-foreground hover:text-[#E30613] flex items-center gap-1">
+            <Link href="/" target="_blank" className="text-sm text-muted-foreground hover:text-[#EF7B22] flex items-center gap-1">
               <Eye className="h-4 w-4"/> Shiko faqen
             </Link>
             <button className="relative p-2 rounded-lg hover:bg-neutral-100">
               <Bell className="h-5 w-5"/>
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E30613] rounded-full"/>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#EF7B22] rounded-full"/>
             </button>
             <div className="flex items-center gap-2 pl-3 border-l">
               <div className="w-9 h-9 rounded-full konsum-gradient text-white flex items-center justify-center font-bold text-sm">AK</div>
@@ -127,7 +127,7 @@ function OverviewTab() {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Tag} label="Oferta aktive" value={DASHBOARD_STATS.active_offers} change="+12%" color="bg-[#E30613]"/>
+        <StatCard icon={Tag} label="Oferta aktive" value={DASHBOARD_STATS.active_offers} change="+12%" color="bg-[#EF7B22]"/>
         <StatCard icon={Package} label="Produkte gjithsej" value={DASHBOARD_STATS.total_products} change="+5%" color="bg-amber-500"/>
         <StatCard icon={MapPin} label="Lokacione" value={DASHBOARD_STATS.total_locations} color="bg-blue-500"/>
         <StatCard icon={Users} label="Vizita të javës" value={DASHBOARD_STATS.weekly_visits.toLocaleString()} change="+24%" color="bg-green-500"/>
@@ -139,12 +139,12 @@ function OverviewTab() {
           <h3 className="font-black text-lg mb-4">Veprime të shpejta</h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              { i: Plus, t: 'Shto Ofertë të Re', c: 'bg-[#E30613]' },
+              { i: Plus, t: 'Shto Ofertë të Re', c: 'bg-[#EF7B22]' },
               { i: ImageIcon, t: 'Ngarko Banner', c: 'bg-amber-500' },
               { i: Sparkles, t: 'Gjenero Stori', c: 'bg-purple-500' },
               { i: Download, t: 'Shkarko PDF Katalog', c: 'bg-blue-500' },
             ].map((a, i) => (
-              <button key={i} className="flex items-center gap-3 p-4 rounded-xl border-2 border-dashed hover:border-solid hover:border-[#E30613] hover:bg-red-50 transition text-left">
+              <button key={i} className="flex items-center gap-3 p-4 rounded-xl border-2 border-dashed hover:border-solid hover:border-[#EF7B22] hover:bg-orange-50 transition text-left">
                 <div className={`w-10 h-10 rounded-lg ${a.c} text-white flex items-center justify-center`}><a.i className="h-5 w-5"/></div>
                 <span className="font-semibold text-sm">{a.t}</span>
               </button>
@@ -156,7 +156,7 @@ function OverviewTab() {
           <div className="space-y-3">
             {RECENT_ACTIVITY.map(a => (
               <div key={a.id} className="flex gap-3 pb-3 border-b last:border-0">
-                <div className="w-8 h-8 rounded-full bg-red-50 text-[#E30613] flex items-center justify-center text-xs font-bold flex-shrink-0">A</div>
+                <div className="w-8 h-8 rounded-full bg-orange-50 text-[#EF7B22] flex items-center justify-center text-xs font-bold flex-shrink-0">A</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold leading-tight">{a.action}</p>
                   <p className="text-xs text-muted-foreground truncate">{a.item}</p>
@@ -193,8 +193,8 @@ function OverviewTab() {
                     <span className="font-semibold">{o.name}</span>
                   </td>
                   <td className="py-3 px-2 text-muted-foreground capitalize">{o.category.replace('-', ' & ')}</td>
-                  <td className="py-3 px-2 font-bold text-[#E30613]">{o.newPrice} MKD</td>
-                  <td className="py-3 px-2"><Badge className="bg-red-100 text-[#E30613] hover:bg-red-100">{o.badge}</Badge></td>
+                  <td className="py-3 px-2 font-bold text-[#EF7B22]">{o.newPrice} MKD</td>
+                  <td className="py-3 px-2"><Badge className="bg-orange-100 text-[#EF7B22] hover:bg-orange-100">{o.badge}</Badge></td>
                   <td className="py-3 px-2"><Badge className="bg-green-100 text-green-700 hover:bg-green-100"><Check className="h-3 w-3 mr-1"/> Aktive</Badge></td>
                 </tr>
               ))}
@@ -214,7 +214,7 @@ function OffersTab() {
           <h1 className="text-3xl font-black">Menaxhimi i Ofertave</h1>
           <p className="text-muted-foreground mt-1">Shto, edito ose fshi oferta. Ngarko imazhe dhe vendos çmime.</p>
         </div>
-        <Button className="bg-[#E30613] hover:bg-[#b8040f]"><Plus className="h-4 w-4 mr-1.5"/> Shto Ofertë</Button>
+        <Button className="bg-[#EF7B22] hover:bg-[#C45F10]"><Plus className="h-4 w-4 mr-1.5"/> Shto Ofertë</Button>
       </div>
 
       <div className="flex gap-3">
@@ -251,8 +251,8 @@ function OffersTab() {
                 </td>
                 <td className="py-3 px-4 text-muted-foreground">{o.category}</td>
                 <td className="py-3 px-4 text-muted-foreground line-through">{o.oldPrice} MKD</td>
-                <td className="py-3 px-4 font-bold text-[#E30613]">{o.newPrice} MKD</td>
-                <td className="py-3 px-4"><Badge className="bg-red-100 text-[#E30613] hover:bg-red-100">{o.badge}</Badge></td>
+                <td className="py-3 px-4 font-bold text-[#EF7B22]">{o.newPrice} MKD</td>
+                <td className="py-3 px-4"><Badge className="bg-orange-100 text-[#EF7B22] hover:bg-orange-100">{o.badge}</Badge></td>
                 <td className="py-3 px-4">
                   <button className="inline-flex items-center gap-1 text-xs font-semibold text-green-700">
                     <span className="w-2 h-2 rounded-full bg-green-500"/> Aktive
@@ -261,7 +261,7 @@ function OffersTab() {
                 <td className="py-3 px-4">
                   <div className="flex gap-1">
                     <button className="p-1.5 rounded hover:bg-neutral-200"><Edit2 className="h-4 w-4 text-blue-600"/></button>
-                    <button className="p-1.5 rounded hover:bg-neutral-200"><Trash2 className="h-4 w-4 text-red-600"/></button>
+                    <button className="p-1.5 rounded hover:bg-neutral-200"><Trash2 className="h-4 w-4 text-[#EF7B22]"/></button>
                     <button className="p-1.5 rounded hover:bg-neutral-200"><MoreVertical className="h-4 w-4"/></button>
                   </div>
                 </td>
@@ -292,7 +292,7 @@ function MarketingTab() {
             <h3 className="font-black text-lg">{m.t}</h3>
             <p className="text-sm text-muted-foreground mt-1">{m.desc}</p>
             <p className="text-xs text-muted-foreground mt-2">Madhësia: <b>{m.size}</b></p>
-            <Button className="w-full mt-4 bg-[#E30613] hover:bg-[#b8040f]"><Sparkles className="h-4 w-4 mr-1.5"/> Gjenero</Button>
+            <Button className="w-full mt-4 bg-[#EF7B22] hover:bg-[#C45F10]"><Sparkles className="h-4 w-4 mr-1.5"/> Gjenero</Button>
           </div>
         ))}
       </div>

@@ -48,10 +48,10 @@ function Home() {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"/>
                   <div className="container relative h-full flex items-center">
                     <div className="max-w-2xl text-white space-y-5">
-                      <Badge className="bg-[#FFC72C] text-[#E30613] font-bold text-sm px-3 py-1">{s.badge}</Badge>
+                      <Badge className="bg-[#20A33A] text-[#EF7B22] font-bold text-sm px-3 py-1">{s.badge}</Badge>
                       <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] drop-shadow-lg">{s.title}</h1>
                       <p className="text-lg md:text-2xl text-white/90 max-w-xl">{s.subtitle}</p>
-                      <Button asChild size="lg" className="bg-[#E30613] hover:bg-[#b8040f] text-white font-bold h-14 px-8 text-base shadow-xl">
+                      <Button asChild size="lg" className="bg-[#EF7B22] hover:bg-[#C45F10] text-white font-bold h-14 px-8 text-base shadow-xl">
                         <Link href={s.href}>{s.cta} <ArrowRight className="ml-2 h-5 w-5"/></Link>
                       </Button>
                     </div>
@@ -72,8 +72,8 @@ function Home() {
       </section>
 
       {/* Trust strip */}
-      <section className="bg-[#FFC72C] py-4 border-b-4 border-[#E30613]">
-        <div className="container grid grid-cols-2 md:grid-cols-4 gap-4 text-[#E30613]">
+      <section className="bg-[#20A33A] py-4 border-b-4 border-[#EF7B22]">
+        <div className="container grid grid-cols-2 md:grid-cols-4 gap-4 text-white">
           {[
             {i: Tag, t: 'Zbritje deri 50%'},
             {i: Truck, t: 'Dërgesa në shtëpi'},
@@ -91,7 +91,7 @@ function Home() {
       <section className="py-10 md:py-14">
         <div className="container space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge className="bg-red-50 text-[#E30613] hover:bg-red-50 font-semibold">Ofertat e javes</Badge>
+            <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 font-semibold">Ofertat e javes</Badge>
             <h2 className="text-3xl md:text-5xl font-black">Zbuloni çmimet më të mira</h2>
             <p className="text-muted-foreground md:text-lg">Ofertat e përzgjedhura me kujdes vetëm për ju, të vërteta dhe me vlefshmëri të kufizuar.</p>
           </div>
@@ -100,7 +100,7 @@ function Home() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"/>
             <Input value={search} onChange={e=>setSearch(e.target.value)}
               placeholder="Kërkoni për produkte në ofertë..."
-              className="pl-12 h-14 text-base shadow-sm border-2 focus-visible:ring-2 focus-visible:ring-[#E30613] focus-visible:border-[#E30613]"/>
+              className="pl-12 h-14 text-base shadow-sm border-2 focus-visible:ring-2 focus-visible:ring-[#EF7B22] focus-visible:border-[#EF7B22]"/>
           </div>
 
           {/* Category chips */}
@@ -109,8 +109,8 @@ function Home() {
               <button key={c.slug} onClick={() => setSelectedCat(c.slug)}
                 className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm border-2 transition ${
                   selectedCat === c.slug
-                    ? 'bg-[#E30613] border-[#E30613] text-white shadow-md'
-                    : 'bg-white border-neutral-200 text-foreground hover:border-[#E30613]'
+                    ? 'bg-[#EF7B22] border-[#EF7B22] text-white shadow-md'
+                    : 'bg-white border-neutral-200 text-foreground hover:border-[#EF7B22]'
                 }`}>
                 <span>{c.icon}</span> {c.name}
               </button>
@@ -127,7 +127,7 @@ function Home() {
           )}
 
           <div className="text-center pt-4">
-            <Button asChild size="lg" variant="outline" className="border-2 border-[#E30613] text-[#E30613] hover:bg-[#E30613] hover:text-white font-bold h-12 px-8">
+            <Button asChild size="lg" variant="outline" className="border-2 border-[#EF7B22] text-[#EF7B22] hover:bg-[#EF7B22] hover:text-white font-bold h-12 px-8">
               <Link href="/oferta">Shiko të gjitha ofertat <ArrowRight className="ml-2 h-4 w-4"/></Link>
             </Button>
           </div>
@@ -140,12 +140,12 @@ function Home() {
           <div className="flex items-end justify-between mb-8">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Flame className="h-6 w-6 text-[#E30613]"/>
-                <Badge className="bg-[#E30613] text-white">HOT DEALS</Badge>
+                <Flame className="h-6 w-6 text-[#EF7B22]"/>
+                <Badge className="bg-[#EF7B22] text-white">HOT DEALS</Badge>
               </div>
               <h2 className="text-3xl md:text-4xl font-black">Zbritjet më të mëdha të javës</h2>
             </div>
-            <Link href="/oferta" className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-[#E30613] hover:underline">
+            <Link href="/oferta" className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-[#EF7B22] hover:underline">
               Shiko të gjitha <ArrowRight className="h-4 w-4"/>
             </Link>
           </div>
@@ -160,10 +160,10 @@ function Home() {
         <div className="container">
           <div className="rounded-3xl overflow-hidden relative konsum-gradient p-8 md:p-14 text-white">
             <div className="relative z-10 max-w-2xl space-y-4">
-              <Badge className="bg-[#FFC72C] text-[#E30613] font-bold">KATALOGU JAVOR</Badge>
+              <Badge className="bg-[#20A33A] text-[#EF7B22] font-bold">KATALOGU JAVOR</Badge>
               <h3 className="text-3xl md:text-5xl font-black leading-tight">Shkarko katalogun e ofertave javore</h3>
               <p className="text-white/90 text-lg">PDF i plotë me të gjitha ofertat aktive. Print dhe sillëni me vete në dyqan.</p>
-              <Button size="lg" className="bg-[#FFC72C] hover:bg-[#FFB800] text-[#E30613] font-bold h-12">
+              <Button size="lg" className="bg-[#20A33A] hover:bg-[#178A30] text-[#EF7B22] font-bold h-12">
                 Shkarko PDF (Demo)
               </Button>
             </div>
