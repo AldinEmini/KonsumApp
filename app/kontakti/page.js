@@ -9,9 +9,11 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, Youtube, Loader2 } from 'lucide-react'
 import { SITE } from '@/lib/mockData'
+import { useI18n } from '@/lib/i18n-context'
 import { toast } from 'sonner'
 
 function KontaktiPage() {
+  const { t } = useI18n()
   const [locations, setLocations] = useState([])
   const [site, setSite] = useState(SITE)
   const [active, setActive] = useState(null)
@@ -31,10 +33,24 @@ function KontaktiPage() {
     })
   }, [])
 
-  const submit = (e) => {
+  const [submitting, setSubmitting] = useState(false)
+  const submit = async (e) => {
     e.preventDefault()
-    toast.success('Mesazhi u dërgua me sukses! Do t’ju kontaktojmë sëshpejti.')
-    setForm({ name: '', email: '', phone: '', message: '' })
+    setSubmitting(true)
+    try {
+      const r = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!r.ok) throw new Error('failed')
+      toast.success(t('message_sent'))
+      setForm({ name: '', email: '', phone: '', message: '' })
+    } catch (err) {
+      toast.error(t('message_send_failed'))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -43,19 +59,19 @@ function KontaktiPage() {
 
       <section className="konsum-gradient text-white py-12 md:py-16">
         <div className="container">
-          <Badge className="bg-[#20A33A] text-white font-bold mb-3 hover:bg-[#20A33A]">NË SHËRBIMIN TUAJ</Badge>
-          <h1 className="text-4xl md:text-6xl font-black">Kontakti & Lokacionet</h1>
-          <p className="text-white/90 mt-3 text-lg max-w-2xl">Na vizitoni në njërin nga {locations.length || 12} dyqanet tona ose na kontaktoni çdo ditë.</p>
+          <Badge className="bg-[#20A33A] text-white font-bold mb-3 hover:bg-[#20A33A]">{t('in_your_service')}</Badge>
+          <h1 className="text-4xl md:text-6xl font-black">{t('contact_locations')}</h1>
+          <p className="text-white/90 mt-3 text-lg max-w-2xl">{t('contact_subtitle')}</p>
         </div>
       </section>
 
       <section className="py-12 -mt-6">
         <div className="container grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { i: Phone, t: 'Telefon', v: site.phone, link: `tel:${site.phone}` },
-            { i: Mail, t: 'Email', v: site.email, link: `mailto:${site.email}` },
-            { i: MapPin, t: 'Adresa', v: site.address },
-            { i: Clock, t: 'Orari', v: site.hours },
+            { i: Phone, t: t('phone_label'), v: site.phone, link: `tel:${site.phone}` },
+            { i: Mail, t: t('email_label'), v: site.email, link: `mailto:${site.email}` },
+            { i: MapPin, t: t('address_label'), v: site.address },
+            { i: Clock, t: t('hours_label'), v: site.hours },
           ].map((c, i) => (
             <div key={i} className="bg-white border shadow-sm rounded-2xl p-5 hover:shadow-lg transition">
               <div className="w-11 h-11 rounded-xl konsum-gradient text-white flex items-center justify-center mb-3">
@@ -72,8 +88,8 @@ function KontaktiPage() {
         <div className="container">
           <div className="flex items-end justify-between mb-6">
             <div>
-              <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 mb-2">{locations.length} lokacione</Badge>
-              <h2 className="text-3xl md:text-4xl font-black">Dyqanet tona</h2>
+              <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 mb-2">{locations.length} {t('locations_label')}</Badge>
+              <h2 className="text-3xl md:text-4xl font-black">{t('our_stores')}</h2>
             </div>
           </div>
           {loading ? (
@@ -111,17 +127,17 @@ function KontaktiPage() {
       <section className="py-16 bg-neutral-50">
         <div className="container grid lg:grid-cols-2 gap-10">
           <div>
-            <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 mb-2">Na shkruani</Badge>
-            <h2 className="text-3xl md:text-4xl font-black mb-3">Keni pyetje? Na kontaktoni</h2>
-            <p className="text-muted-foreground mb-6">Ekipi ynë i shërbimit ndaj klientit do t’iu përgjigjet brenda 24 orësh.</p>
+            <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 mb-2">{t('write_us')}</Badge>
+            <h2 className="text-3xl md:text-4xl font-black mb-3">{t('have_questions')}</h2>
+            <p className="text-muted-foreground mb-6">{t('response_time')}</p>
             <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-2xl border">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold mb-1.5 block">Emri i plotë</label>
+                  <label className="text-sm font-semibold mb-1.5 block">{t('full_name')}</label>
                   <Input required value={form.name} onChange={e=>setForm({...form, name: e.target.value})} placeholder="Filan Fisteku"/>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold mb-1.5 block">Telefoni</label>
+                  <label className="text-sm font-semibold mb-1.5 block">{t('your_phone')}</label>
                   <Input value={form.phone} onChange={e=>setForm({...form, phone: e.target.value})} placeholder="+389 70 000 000"/>
                 </div>
               </div>
@@ -130,18 +146,18 @@ function KontaktiPage() {
                 <Input required type="email" value={form.email} onChange={e=>setForm({...form, email: e.target.value})} placeholder="juaj@email.com"/>
               </div>
               <div>
-                <label className="text-sm font-semibold mb-1.5 block">Mesazhi</label>
-                <Textarea required rows={5} value={form.message} onChange={e=>setForm({...form, message: e.target.value})} placeholder="Shkruani mesazhin tuaj..."/>
+                <label className="text-sm font-semibold mb-1.5 block">{t('your_message')}</label>
+                <Textarea required rows={5} value={form.message} onChange={e=>setForm({...form, message: e.target.value})} placeholder={t('write_message')}/>
               </div>
-              <Button type="submit" size="lg" className="w-full bg-[#EF7B22] hover:bg-[#C45F10] text-white font-bold">
-                <Send className="h-4 w-4 mr-2"/> Dërgo mesazhin
+              <Button type="submit" size="lg" disabled={submitting} className="w-full bg-[#EF7B22] hover:bg-[#C45F10] text-white font-bold">
+                <Send className="h-4 w-4 mr-2"/> {t('send_message')}
               </Button>
             </form>
           </div>
 
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl border">
-              <h3 className="font-black text-xl mb-4">Na ndiqni në rrjete sociale</h3>
+              <h3 className="font-black text-xl mb-4">{t('follow_us')}</h3>
               <div className="grid grid-cols-3 gap-3">
                 <a href={site.social?.facebook} className="flex flex-col items-center gap-2 p-4 rounded-xl border hover:border-[#EF7B22] hover:bg-orange-50 transition">
                   <Facebook className="h-6 w-6 text-[#EF7B22]"/><span className="text-xs font-semibold">Facebook</span>
@@ -155,18 +171,18 @@ function KontaktiPage() {
               </div>
             </div>
             <div className="bg-white p-6 rounded-2xl border">
-              <h3 className="font-black text-xl mb-3">FAQ - Pyetjet më të shpeshta</h3>
+              <h3 className="font-black text-xl mb-3">{t('faq_title')}</h3>
               <details className="py-3 border-b">
-                <summary className="cursor-pointer font-semibold">A bëni dërgesa në shtëpi?</summary>
-                <p className="text-sm text-muted-foreground mt-2">Po, ne bëjmë dërgesa në shtëpi për porositë mbi 1000 MKD brenda Shkupit.</p>
+                <summary className="cursor-pointer font-semibold">{t('faq_delivery_q')}</summary>
+                <p className="text-sm text-muted-foreground mt-2">{t('faq_delivery_a')}</p>
               </details>
               <details className="py-3 border-b">
-                <summary className="cursor-pointer font-semibold">Si t’i përdor ofertat?</summary>
-                <p className="text-sm text-muted-foreground mt-2">Mjafton t’i shihni ofertat dhe t’i merrni produktet në dyqan, çmimet aplikohen automatikisht në arka.</p>
+                <summary className="cursor-pointer font-semibold">{t('faq_offers_q')}</summary>
+                <p className="text-sm text-muted-foreground mt-2">{t('faq_offers_a')}</p>
               </details>
               <details className="py-3">
-                <summary className="cursor-pointer font-semibold">A kam mundësi për kthim?</summary>
-                <p className="text-sm text-muted-foreground mt-2">Po, brenda 14 ditësh me faturën origjinale.</p>
+                <summary className="cursor-pointer font-semibold">{t('faq_return_q')}</summary>
+                <p className="text-sm text-muted-foreground mt-2">{t('faq_return_a')}</p>
               </details>
             </div>
           </div>

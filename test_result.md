@@ -257,6 +257,39 @@ backend:
             - GET /api/stats without auth → 401
             - GET /api/stats with auth → 200 with {active_offers:3, total_products:14, total_locations:1, weekly_visits:12450, conversion_rate:4.2}
             Stats endpoint working correctly with proper auth protection.
+        - working: true
+          agent: "testing"
+          comment: |
+            ✅ UPDATED STATS ENDPOINT VERIFIED:
+            - GET /api/stats with auth → 200 with NEW field "unread_messages": 1
+            - Stats now includes: {active_offers:12, total_products:12, total_locations:4, unread_messages:1, weekly_visits:12450, conversion_rate:4.2}
+            Updated stats endpoint working correctly with new unread_messages field.
+
+  - task: "Messages CRUD endpoint (contact form)"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: |
+            ✅ ALL MESSAGES TESTS PASSED (12/12):
+            - POST /api/messages (PUBLIC, no auth) with valid data → 200 with {message: {id, name, email, phone, message, read:false}}
+            - POST /api/messages with missing fields → 400
+            - GET /api/messages without auth → 401
+            - Login as aldin@konsum.mk / Aldin2008 → 200 with konsum_session cookie
+            - GET /api/messages with auth → 200 with {messages: [...], unread: 2}
+            - PUT /api/messages/{id} with auth, body {"read": true} → 200, message marked as read
+            - GET /api/messages after mark as read → unread count decreased from 2 to 1
+            - DELETE /api/messages/{id} with auth → 200
+            - DELETE /api/messages/nonexistent → 200 (graceful)
+            - GET /api/stats with auth → includes "unread_messages" field
+            - GET /api/offers (existing endpoint) → still works correctly
+            - GET /api/auth/me (existing endpoint) → still works correctly
+            All messages CRUD operations working perfectly. Public POST, protected GET/PUT/DELETE. Unread count tracking working. Existing endpoints unaffected.
 
 frontend:
   - task: "Public pages connect to API (home, oferta, rreth-nesh, kontakti)"
@@ -298,7 +331,7 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
@@ -365,4 +398,41 @@ agent_communication:
         ✓ All CRUD operations working correctly
         
         NO CRITICAL ISSUES FOUND. Backend is fully functional and ready for production.
+
+    - agent: "testing"
+      message: |
+        ✅ NEW MESSAGES ENDPOINT TESTING COMPLETE - ALL TESTS PASSED (12/12)
+        
+        Tested NEW messages endpoint and updated stats endpoint at https://offers-hub-12.preview.emergentagent.com/api
+        Created test suite in /app/backend_test_messages.py
+        
+        RESULTS SUMMARY:
+        ✅ Messages POST (2/2) - Public endpoint working
+           - POST /api/messages with valid data → 200 ✓
+           - POST /api/messages with missing fields → 400 ✓
+        ✅ Messages GET (2/2) - Protected endpoint working
+           - GET /api/messages without auth → 401 ✓
+           - GET /api/messages with auth → 200 with messages array and unread count ✓
+        ✅ Messages PUT (2/2) - Mark as read working
+           - PUT /api/messages/{id} with auth → 200, message marked as read ✓
+           - Unread count decreased from 2 to 1 after marking as read ✓
+        ✅ Messages DELETE (2/2) - Delete working
+           - DELETE /api/messages/{id} with auth → 200 ✓
+           - DELETE /api/messages/nonexistent → 200 (graceful) ✓
+        ✅ Stats Updated (1/1) - New field added
+           - GET /api/stats now includes "unread_messages" field ✓
+        ✅ Existing Endpoints (3/3) - Still working
+           - GET /api/offers → 200 ✓
+           - GET /api/auth/me → 200 ✓
+           - Login flow → 200 ✓
+        
+        SPECIAL VERIFICATIONS:
+        ✓ Messages POST is PUBLIC (no auth required)
+        ✓ Messages GET/PUT/DELETE are PROTECTED (require auth)
+        ✓ Unread count tracking working correctly
+        ✓ Stats endpoint updated with "unread_messages" field
+        ✓ Existing endpoints (offers, auth) unaffected by new changes
+        ✓ Seed data (admin user, 12 offers, 4 locations) preserved
+        
+        NO CRITICAL ISSUES FOUND. New messages endpoint fully functional and integrated correctly.
 

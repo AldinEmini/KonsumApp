@@ -14,13 +14,17 @@ import { Badge } from '@/components/ui/badge'
 import Logo from '@/components/site/Logo'
 import OfferDialog from '@/components/admin/OfferDialog'
 import MarketingDialog from '@/components/admin/MarketingDialog'
+import HeroEditor from '@/components/admin/HeroEditor'
+import MessagesTab from '@/components/admin/MessagesTab'
 import { useAuth } from '@/lib/auth-context'
 import { toast } from 'sonner'
 
 const NAV = [
   { key: 'overview', label: 'Pasqyra', icon: LayoutDashboard },
   { key: 'offers', label: 'Ofertat', icon: Tag },
+  { key: 'hero', label: 'Hero Banner', icon: ImageIcon },
   { key: 'marketing', label: 'Marketing Gen.', icon: Sparkles },
+  { key: 'messages', label: 'Mesazhet', icon: Phone },
   { key: 'locations', label: 'Lokacionet', icon: MapPin },
   { key: 'content', label: 'Përmbajtja', icon: FileText },
   { key: 'settings', label: 'Cilësimet', icon: Settings },
@@ -32,6 +36,7 @@ function AdminDashboard() {
   const [tab, setTab] = useState('overview')
   const [offers, setOffers] = useState([])
   const [stats, setStats] = useState(null)
+  const [unreadMessages, setUnreadMessages] = useState(0)
   const [loading, setLoading] = useState(true)
   const [offerDialog, setOfferDialog] = useState({ open: false, offer: null })
   const [marketingDialog, setMarketingDialog] = useState({ open: false, type: 'story' })
@@ -45,6 +50,7 @@ function AdminDashboard() {
       ])
       setOffers(oRes.offers || [])
       setStats(sRes.stats || null)
+      setUnreadMessages(sRes.stats?.unread_messages || 0)
     } finally {
       setLoading(false)
     }
@@ -88,6 +94,9 @@ function AdminDashboard() {
                   : 'text-neutral-700 hover:bg-neutral-100'
               }`}>
               <span className="flex items-center gap-3"><n.icon className="h-4 w-4"/> {n.label}</span>
+              {n.key === 'messages' && unreadMessages > 0 && (
+                <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${tab === n.key ? 'bg-white text-[#EF7B22]' : 'bg-[#EF7B22] text-white'}`}>{unreadMessages}</span>
+              )}
             </button>
           ))}
         </nav>
@@ -147,6 +156,8 @@ function AdminDashboard() {
             <MarketingTab offers={offers}
               onOpen={(t) => setMarketingDialog({ open: true, type: t })}/>
           )}
+          {!loading && tab === 'hero' && <HeroEditor/>}
+          {!loading && tab === 'messages' && <MessagesTab onUnreadChange={setUnreadMessages}/>}
           {!loading && tab === 'locations' && <LocationsTab/>}
           {!loading && tab === 'content' && <ContentTab/>}
           {!loading && tab === 'settings' && (

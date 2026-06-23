@@ -11,8 +11,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { HERO_SLIDES, CATEGORIES } from '@/lib/mockData'
+import { useI18n } from '@/lib/i18n-context'
 
 function Home() {
+  const { t } = useI18n()
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedCat, setSelectedCat] = useState('te-gjitha')
   const [search, setSearch] = useState('')
@@ -87,10 +89,10 @@ function Home() {
       <section className="bg-[#20A33A] py-4 border-b-4 border-[#EF7B22]">
         <div className="container grid grid-cols-2 md:grid-cols-4 gap-4 text-white">
           {[
-            {i: Tag, t: 'Zbritje deri 50%'},
-            {i: Truck, t: 'Dërgesa në shtëpi'},
-            {i: Award, t: 'Cilësi e garantuar'},
-            {i: Clock, t: 'Hapur çdo ditë 07-22'},
+            {i: Tag, t: t('trust_discount')},
+            {i: Truck, t: t('trust_delivery')},
+            {i: Award, t: t('trust_quality')},
+            {i: Clock, t: t('trust_hours')},
           ].map((b, idx) => (
             <div key={idx} className="flex items-center justify-center gap-2 font-bold text-sm md:text-base">
               <b.i className="h-5 w-5"/> {b.t}
@@ -102,15 +104,15 @@ function Home() {
       <section className="py-10 md:py-14">
         <div className="container space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 font-semibold">Ofertat e javes</Badge>
-            <h2 className="text-3xl md:text-5xl font-black">Zbuloni çmimet më të mira</h2>
-            <p className="text-muted-foreground md:text-lg">Ofertat e përzgjedhura me kujdes vetëm për ju, të vërteta dhe me vlefshmëri të kufizuar.</p>
+            <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 font-semibold">{t('weekly_offers_badge')}</Badge>
+            <h2 className="text-3xl md:text-5xl font-black">{t('discover_best_prices')}</h2>
+            <p className="text-muted-foreground md:text-lg">{t('offers_subtitle')}</p>
           </div>
 
           <div className="max-w-2xl mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"/>
             <Input value={search} onChange={e=>setSearch(e.target.value)}
-              placeholder="Kërkoni për produkte në ofertë..."
+              placeholder={t('search_products')}
               className="pl-12 h-14 text-base shadow-sm border-2 focus-visible:ring-2 focus-visible:ring-[#EF7B22] focus-visible:border-[#EF7B22]"/>
           </div>
 
@@ -136,12 +138,12 @@ function Home() {
           )}
 
           {!loading && filtered.length === 0 && (
-            <div className="text-center py-16 text-muted-foreground">Asnjë ofertë nuk u gjet.</div>
+            <div className="text-center py-16 text-muted-foreground">{t('no_offers_found')}</div>
           )}
 
           <div className="text-center pt-4">
             <Button asChild size="lg" variant="outline" className="border-2 border-[#EF7B22] text-[#EF7B22] hover:bg-[#EF7B22] hover:text-white font-bold h-12 px-8">
-              <Link href="/oferta">Shiko të gjitha ofertat <ArrowRight className="ml-2 h-4 w-4"/></Link>
+              <Link href="/oferta">{t('view_all_offers')} <ArrowRight className="ml-2 h-4 w-4"/></Link>
             </Button>
           </div>
         </div>
@@ -156,7 +158,7 @@ function Home() {
                   <Flame className="h-6 w-6 text-[#EF7B22]"/>
                   <Badge className="bg-[#EF7B22] text-white hover:bg-[#EF7B22]">HOT DEALS</Badge>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-black">Zbritjet më të mëdha të javës</h2>
+                <h2 className="text-3xl md:text-4xl font-black">{t('biggest_discounts')}</h2>
               </div>
               <Link href="/oferta" className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-[#EF7B22] hover:underline">
                 Shiko të gjitha <ArrowRight className="h-4 w-4"/>
@@ -173,11 +175,11 @@ function Home() {
         <div className="container">
           <div className="rounded-3xl overflow-hidden relative konsum-gradient p-8 md:p-14 text-white">
             <div className="relative z-10 max-w-2xl space-y-4">
-              <Badge className="bg-[#20A33A] text-white font-bold hover:bg-[#20A33A]">KATALOGU JAVOR</Badge>
-              <h3 className="text-3xl md:text-5xl font-black leading-tight">Katalogu i ofertave javore</h3>
-              <p className="text-white/90 text-lg">Shkarkoni PDF-në me të gjitha ofertat aktive ose vizitoni dyqanin më të afërt.</p>
+              <Badge className="bg-[#20A33A] text-white font-bold hover:bg-[#20A33A]">{t('weekly_catalog')}</Badge>
+              <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('catalog_title')}</h3>
+              <p className="text-white/90 text-lg">{t('catalog_desc')}</p>
               <Button asChild size="lg" className="bg-[#20A33A] hover:bg-[#178A30] text-white font-bold h-12">
-                <Link href="/oferta">Shiko Ofertat</Link>
+                <Link href="/oferta">{t('offers_button')}</Link>
               </Button>
             </div>
             <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-30 hidden md:block">

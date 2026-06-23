@@ -208,20 +208,70 @@ async function handler(request, { params }) {
     return NextResponse.json({ ok: true })
   }
 
+  // ===== MESSAGES (contact form) =====
+  if (path === 'messages' && method === 'POST') {
+    const body = await readBody(request)
+    if (!body.name || !body.email || !body.message) return badRequest('Name, email and message are required')
+    const msg = {
+      id: uuid(),
+      name: body.name,
+      email: body.email,
+      phone: body.phone || '',
+      message: body.message,
+      read: false,
+      createdAt: new Date(),
+    }
+    await db.collection('messages').insertOne(msg)
+    const { _id, ...rest } = msg
+    return NextResponse.json({ message: rest })
+  }
+
+  if (path === 'messages' && method === 'GET') {
+    const session = await requireAuth(request)
+    if (!session) return unauthorized()
+    const msgs = await db.collection('messages').find({}).sort({ createdAt: -1 }).toArray()
+    const unread = await db.collection('messages').countDocuments({ read: false })
+    return NextResponse.json({ messages: msgs.map(({ _id, ...m }) => m), unread })
+  }
+
+  if (path.startsWith('messages/') && (method === 'PUT' || method === 'PATCH')) {
+    const session = await requireAuth(request)
+    if (!session) return unauthorized()
+    const id = path.split('/')[1]
+    const body = await readBody(request)
+    const update = { ...body }
+    delete update.id
+    delete update._id
+    const r = await db.collection('messages').findOneAndUpdate({ id }, { $set: update }, { returnDocument: 'after' })
+    if (!r) return notFound()
+    const { _id, ...rest } = r
+    return NextResponse.json({ message: rest })
+  }
+
+  if (path.startsWith('messages/') && method === 'DELETE') {
+    const session = await requireAuth(request)
+    if (!session) return unauthorized()
+    const id = path.split('/')[1]
+    await db.collection('messages').deleteOne({ id })
+    return NextResponse.json({ ok: true })
+  }
+
   // ===== STATS =====
   if (path === 'stats' && method === 'GET') {
     const session = await requireAuth(request)
     if (!session) return unauthorized()
-    const [active_offers, total_products, total_locations] = await Promise.all([
+    const [active_offers, total_products, total_locations, unread_messages] = await Promise.all([
       db.collection('offers').countDocuments({ active: true }),
       db.collection('offers').countDocuments(),
       db.collection('locations').countDocuments(),
+      db.collection('messages').countDocuments({ read: false }),
     ])
     return NextResponse.json({
       stats: {
         active_offers,
         total_products,
         total_locations,
+        unread_messages,
         weekly_visits: 12450,
         conversion_rate: 4.2,
       }
