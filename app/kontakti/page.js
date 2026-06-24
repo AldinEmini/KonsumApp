@@ -173,10 +173,6 @@ function KontaktiPage() {
             <div className="bg-white p-6 rounded-2xl border">
               <h3 className="font-black text-xl mb-3">{t('faq_title')}</h3>
               <details className="py-3 border-b">
-                <summary className="cursor-pointer font-semibold">{t('faq_delivery_q')}</summary>
-                <p className="text-sm text-muted-foreground mt-2">{t('faq_delivery_a')}</p>
-              </details>
-              <details className="py-3 border-b">
                 <summary className="cursor-pointer font-semibold">{t('faq_offers_q')}</summary>
                 <p className="text-sm text-muted-foreground mt-2">{t('faq_offers_a')}</p>
               </details>

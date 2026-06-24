@@ -12,7 +12,7 @@ import { CATEGORIES } from '@/lib/mockData'
 import { useI18n } from '@/lib/i18n-context'
 
 function OfertaPage() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [search, setSearch] = useState('')
   const [cat, setCat] = useState('te-gjitha')
   const [sort, setSort] = useState('discount')
@@ -95,7 +95,7 @@ function OfertaPage() {
             <>
               <p className="text-sm text-muted-foreground mb-5">{t('found')} <b>{list.length}</b> {t('offers')}</p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-                {list.map(o => <OfferCard key={o.id} offer={o}/>)}
+                {list.map(o => <OfferCard key={o.id} offer={o} lang={lang}/>)}
               </div>
               {list.length === 0 && (
                 <div className="text-center py-20">

@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import Header from '@/components/site/Header'
 import Footer from '@/components/site/Footer'
 import { Badge } from '@/components/ui/badge'
-import { Award, Heart, Sparkles, Users, Clock, Truck, Shield, Loader2 } from 'lucide-react'
+import { Award, Heart, Sparkles, Users, Clock, Shield, Loader2 } from 'lucide-react'
 import { ABOUT_CONTENT } from '@/lib/mockData'
 import { useI18n } from '@/lib/i18n-context'
 
 const VALUE_ICONS = { 0: Award, 1: Sparkles, 2: Heart, 3: Users }
 
 function RrethNesh() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [content, setContent] = useState(ABOUT_CONTENT)
   const [loading, setLoading] = useState(true)
 
@@ -32,8 +32,8 @@ function RrethNesh() {
         <div className="container relative h-full flex items-center text-white">
           <div className="max-w-2xl space-y-4">
             <Badge className="bg-[#20A33A] text-white font-bold hover:bg-[#20A33A]">{t('about_badge')}</Badge>
-            <h1 className="text-4xl md:text-6xl font-black">{content.hero_title}</h1>
-            <p className="text-lg md:text-xl text-white/90">{content.hero_subtitle}</p>
+            <h1 className="text-4xl md:text-6xl font-black">{content.translations?.[lang]?.hero_title || content.hero_title}</h1>
+            <p className="text-lg md:text-xl text-white/90">{content.translations?.[lang]?.hero_subtitle || content.hero_subtitle}</p>
           </div>
         </div>
       </section>
@@ -43,7 +43,7 @@ function RrethNesh() {
           <div className="space-y-5">
             <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50">{t('history_label')}</Badge>
             <h2 className="text-3xl md:text-4xl font-black">{t('history_heading')}</h2>
-            <p className="text-muted-foreground leading-relaxed md:text-lg">{content.history}</p>
+            <p className="text-muted-foreground leading-relaxed md:text-lg">{content.translations?.[lang]?.history || content.history}</p>
             <div className="grid grid-cols-3 gap-4 pt-4">
               <div><div className="text-3xl font-black text-[#EF7B22]">30+</div><div className="text-xs text-muted-foreground">{t('years_experience')}</div></div>
               <div><div className="text-3xl font-black text-[#EF7B22]">12</div><div className="text-xs text-muted-foreground">{t('locations_label')}</div></div>
@@ -65,11 +65,11 @@ function RrethNesh() {
         <div className="container grid md:grid-cols-2 gap-6">
           <div className="bg-white p-8 rounded-2xl border-l-4 border-[#EF7B22] shadow-sm">
             <h3 className="text-2xl font-black mb-3 flex items-center gap-2"><Sparkles className="h-6 w-6 text-[#EF7B22]"/> {t('our_mission')}</h3>
-            <p className="text-muted-foreground leading-relaxed">{content.mission}</p>
+            <p className="text-muted-foreground leading-relaxed">{content.translations?.[lang]?.mission || content.mission}</p>
           </div>
           <div className="bg-white p-8 rounded-2xl border-l-4 border-[#20A33A] shadow-sm">
             <h3 className="text-2xl font-black mb-3 flex items-center gap-2"><Award className="h-6 w-6 text-[#20A33A]"/> {t('our_vision')}</h3>
-            <p className="text-muted-foreground leading-relaxed">{content.vision}</p>
+            <p className="text-muted-foreground leading-relaxed">{content.translations?.[lang]?.vision || content.vision}</p>
           </div>
         </div>
       </section>
@@ -109,14 +109,14 @@ function RrethNesh() {
               <div className="flex justify-between py-2"><span>{t('holidays')}</span><b>09:00 - 18:00</b></div>
             </div>
           </div>
-          <div className="bg-white p-8 rounded-2xl shadow-sm" id="derguar">
-            <Truck className="h-10 w-10 text-[#EF7B22] mb-4"/>
-            <h3 className="text-2xl font-black mb-4">{t('home_delivery')}</h3>
-            <p className="text-muted-foreground leading-relaxed">{content.delivery}</p>
+          <div className="bg-white p-8 rounded-2xl shadow-sm">
+            <Award className="h-10 w-10 text-[#EF7B22] mb-4"/>
+            <h3 className="text-2xl font-black mb-4">{t('quality_guarantee')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('quality_desc')}</p>
             <ul className="mt-4 space-y-2 text-sm">
-              <li className="flex gap-2"><span className="text-[#20A33A]">✓</span> {t('free_above')}</li>
-              <li className="flex gap-2"><span className="text-[#20A33A]">✓</span> {t('within_2h')}</li>
+              <li className="flex gap-2"><span className="text-[#20A33A]">✓</span> {t('fresh_daily')}</li>
               <li className="flex gap-2"><span className="text-[#20A33A]">✓</span> {t('cash_or_card')}</li>
+              <li className="flex gap-2"><span className="text-[#20A33A]">✓</span> {t('best_prices')}</li>
             </ul>
           </div>
         </div>

@@ -14,7 +14,7 @@ import { HERO_SLIDES, CATEGORIES } from '@/lib/mockData'
 import { useI18n } from '@/lib/i18n-context'
 
 function Home() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedCat, setSelectedCat] = useState('te-gjitha')
   const [search, setSearch] = useState('')
@@ -63,11 +63,11 @@ function Home() {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"/>
                   <div className="container relative h-full flex items-center">
                     <div className="max-w-2xl text-white space-y-5">
-                      <Badge className="bg-[#20A33A] text-white font-bold text-sm px-3 py-1 hover:bg-[#20A33A]">{s.badge}</Badge>
-                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] drop-shadow-lg">{s.title}</h1>
-                      <p className="text-lg md:text-2xl text-white/90 max-w-xl">{s.subtitle}</p>
+                      <Badge className="bg-[#20A33A] text-white font-bold text-sm px-3 py-1 hover:bg-[#20A33A]">{s.translations?.[lang]?.badge || s.badge}</Badge>
+                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] drop-shadow-lg">{s.translations?.[lang]?.title || s.title}</h1>
+                      <p className="text-lg md:text-2xl text-white/90 max-w-xl">{s.translations?.[lang]?.subtitle || s.subtitle}</p>
                       <Button asChild size="lg" className="bg-[#EF7B22] hover:bg-[#C45F10] text-white font-bold h-14 px-8 text-base shadow-xl">
-                        <Link href={s.href}>{s.cta} <ArrowRight className="ml-2 h-5 w-5"/></Link>
+                        <Link href={s.href}>{s.translations?.[lang]?.cta || s.cta} <ArrowRight className="ml-2 h-5 w-5"/></Link>
                       </Button>
                     </div>
                   </div>
@@ -90,7 +90,7 @@ function Home() {
         <div className="container grid grid-cols-2 md:grid-cols-4 gap-4 text-white">
           {[
             {i: Tag, t: t('trust_discount')},
-            {i: Truck, t: t('trust_delivery')},
+            {i: Award, t: t('trust_great_prices')},
             {i: Award, t: t('trust_quality')},
             {i: Clock, t: t('trust_hours')},
           ].map((b, idx) => (
@@ -133,7 +133,7 @@ function Home() {
             <div className="flex justify-center py-16"><Loader2 className="h-10 w-10 animate-spin text-[#EF7B22]"/></div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-              {filtered.map(o => <OfferCard key={o.id} offer={o}/>)}
+              {filtered.map(o => <OfferCard key={o.id} offer={o} lang={lang}/>)}
             </div>
           )}
 
@@ -165,7 +165,7 @@ function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {topDeals.map(o => <OfferCard key={o.id} offer={o}/>)}
+              {topDeals.map(o => <OfferCard key={o.id} offer={o} lang={lang}/>)}
             </div>
           </div>
         </section>

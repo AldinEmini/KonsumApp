@@ -36,7 +36,6 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/rreth-nesh#politika" className="hover:text-white">{t('return_policy')}</Link></li>
             <li><Link href="/rreth-nesh#privatesia" className="hover:text-white">{t('privacy')}</Link></li>
-            <li><Link href="/rreth-nesh#derguar" className="hover:text-white">{t('delivery')}</Link></li>
             <li><Link href="/rreth-nesh#kushtet" className="hover:text-white">{t('terms')}</Link></li>
           </ul>
         </div>

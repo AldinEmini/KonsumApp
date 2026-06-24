@@ -291,6 +291,39 @@ backend:
             - GET /api/auth/me (existing endpoint) → still works correctly
             All messages CRUD operations working perfectly. Public POST, protected GET/PUT/DELETE. Unread count tracking working. Existing endpoints unaffected.
 
+  - task: "Auto-translation feature for offers and content"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js, lib/translator.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: |
+            ✅ ALL AUTO-TRANSLATION TESTS PASSED (6/6):
+            - GET /api/offers → 200, all offers have translations field with en/sq/mk keys containing name and unit ✓
+              Sample: "Mish Viçi i Freskët" → en:"Fresh Beef", sq:"Mish Viçi i Freskët", mk:"Свеже говедско месо"
+            - GET /api/content → 200, hero_slides have translations field with en/sq/mk keys containing title/subtitle/cta/badge ✓
+              Sample: en:"Weekly Offers", sq:"Ofertat Javore"
+            - POST /api/auth/login (aldin@konsum.mk/Aldin2008) → 200 with konsum_session cookie ✓
+            - POST /api/offers with source_lang:"sq" → 200, auto-translates name and unit to en/sq/mk ✓
+              Created "Vaj Ulliri 1L" → en:"Olive Oil 1L", sq:"Vaj Ulliri 1L", mk:"Маслиново масло 1L"
+            - DELETE test offer → 200, cleanup successful ✓
+            - POST /api/translate-all (with auth) → 200 with {ok:true, translatedOffers:12, translatedSlides:3} ✓
+            
+            TRANSLATION INTEGRATION:
+            ✓ Uses Emergent LLM API (OpenAI-compatible) with gpt-4o-mini model
+            ✓ Translates from source language (en/sq/mk) to other two languages
+            ✓ Macedonian uses Cyrillic script correctly
+            ✓ Auto-translation on POST /api/offers when source_lang provided
+            ✓ Re-translation on PUT /api/offers when name/unit changed
+            ✓ Backfill endpoint /api/translate-all for existing data
+            ✓ All existing offers and content now have translations
+            
+            NO CRITICAL ISSUES FOUND. Auto-translation feature fully functional with LLM integration working correctly.
+
 frontend:
   - task: "Public pages connect to API (home, oferta, rreth-nesh, kontakti)"
     implemented: true
@@ -331,7 +364,7 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 3
+  test_sequence: 4
   run_ui: false
 
 test_plan:
@@ -435,4 +468,36 @@ agent_communication:
         ✓ Seed data (admin user, 12 offers, 4 locations) preserved
         
         NO CRITICAL ISSUES FOUND. New messages endpoint fully functional and integrated correctly.
+
+    - agent: "testing"
+      message: |
+        ✅ AUTO-TRANSLATION SMOKE TEST COMPLETE - ALL TESTS PASSED (6/6)
+        
+        Tested auto-translation feature at https://offers-hub-12.preview.emergentagent.com/api
+        Created test suite in /app/backend_test_translation.py
+        
+        RESULTS SUMMARY:
+        ✅ Offers have translations (1/1) - All offers have translations field with en/sq/mk
+           - Sample: "Mish Viçi i Freskët" → en:"Fresh Beef", sq:"Mish Viçi i Freskët", mk:"Свеже говедско месо" ✓
+        ✅ Content has translations (1/1) - Hero slides have translations with en/sq/mk
+           - Sample: en:"Weekly Offers", sq:"Ofertat Javore" ✓
+        ✅ Authentication (1/1) - Login working
+           - POST /api/auth/login (aldin@konsum.mk/Aldin2008) → 200 with cookie ✓
+        ✅ Auto-translate on create (1/1) - POST /api/offers with source_lang auto-translates
+           - Created "Vaj Ulliri 1L" with source_lang:"sq" → en:"Olive Oil 1L", mk:"Маслиново масло 1L" ✓
+        ✅ Cleanup (1/1) - DELETE test offer successful ✓
+        ✅ Translate-all endpoint (1/1) - Backfill translations working
+           - POST /api/translate-all → {ok:true, translatedOffers:12, translatedSlides:3} ✓
+        
+        TRANSLATION VERIFICATION:
+        ✓ Uses Emergent LLM API (gpt-4o-mini) via lib/translator.js
+        ✓ Translates from source language (en/sq/mk) to other two languages
+        ✓ Macedonian uses Cyrillic script correctly (Маслиново масло, Свеже говедско месо)
+        ✓ English translations are natural ("Fresh Beef", "Olive Oil")
+        ✓ Albanian source text preserved correctly
+        ✓ All 12 existing offers now have translations
+        ✓ All 3 hero slides now have translations
+        ✓ No existing offers or locations were deleted during testing
+        
+        NO CRITICAL ISSUES FOUND. Auto-translation feature fully functional with LLM integration working correctly.
 

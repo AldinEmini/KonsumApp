@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { verifyPassword, createSession, getSession, SESSION_COOKIE } from '@/lib/auth'
 import { ensureSeeded } from '@/lib/seed'
+import { translateObject } from '@/lib/translator'
 import { v4 as uuid } from 'uuid'
 
 async function readBody(request) {
@@ -83,6 +84,12 @@ async function handler(request, { params }) {
     if (!session) return unauthorized()
     const body = await readBody(request)
     if (!body.name || !body.newPrice) return badRequest('Emri dhe çmimi i ri janë të detyrueshme')
+    const sourceLang = body.source_lang || 'sq'
+    let translations = body.translations
+    if (!translations) {
+      try { translations = await translateObject({ name: body.name, unit: body.unit || 'copë' }, ['name', 'unit'], sourceLang) }
+      catch { translations = { [sourceLang]: { name: body.name, unit: body.unit || 'copë' } } }
+    }
     const offer = {
       id: uuid(),
       name: body.name,
@@ -94,6 +101,7 @@ async function handler(request, { params }) {
       badge: body.badge || (body.oldPrice ? `-${Math.round(((body.oldPrice - body.newPrice) / body.oldPrice) * 100)}%` : 'OFERTË'),
       active: body.active !== false,
       order: body.order || 0,
+      translations,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -120,10 +128,18 @@ async function handler(request, { params }) {
     delete update._id
     if (update.oldPrice !== undefined) update.oldPrice = Number(update.oldPrice)
     if (update.newPrice !== undefined) update.newPrice = Number(update.newPrice)
-    // auto-recompute badge if prices changed and no manual badge sent
     if (update.oldPrice && update.newPrice && !body.badge) {
       update.badge = `-${Math.round(((update.oldPrice - update.newPrice) / update.oldPrice) * 100)}%`
     }
+    // Re-translate if name or unit changed
+    if ((update.name || update.unit) && !update.translations) {
+      try {
+        const existing = await db.collection('offers').findOne({ id })
+        const merged = { name: update.name || existing?.name, unit: update.unit || existing?.unit || 'copë' }
+        update.translations = await translateObject(merged, ['name', 'unit'], body.source_lang || 'sq')
+      } catch {}
+    }
+    delete update.source_lang
     const r = await db.collection('offers').findOneAndUpdate(
       { id },
       { $set: update },
@@ -206,6 +222,55 @@ async function handler(request, { params }) {
     const id = path.split('/')[1]
     await db.collection('locations').deleteOne({ id })
     return NextResponse.json({ ok: true })
+  }
+
+  // ===== TRANSLATE-ALL: backfill translations for existing data =====
+  if (path === 'translate-all' && method === 'POST') {
+    const session = await requireAuth(request)
+    if (!session) return unauthorized()
+    const sourceLang = 'sq'
+    let translatedOffers = 0
+    let translatedSlides = 0
+    const offers = await db.collection('offers').find({}).toArray()
+    for (const o of offers) {
+      try {
+        const tr = await translateObject({ name: o.name, unit: o.unit || 'copë' }, ['name', 'unit'], sourceLang)
+        await db.collection('offers').updateOne({ id: o.id }, { $set: { translations: tr } })
+        translatedOffers++
+      } catch (e) { console.error('Translate offer error:', e.message) }
+    }
+    // Content: hero_slides + about
+    const doc = await db.collection('content').findOne({ id: 'site' })
+    if (doc) {
+      const slides = doc.hero_slides || []
+      const updatedSlides = []
+      for (const s of slides) {
+        try {
+          const tr = await translateObject(
+            { title: s.title, subtitle: s.subtitle, cta: s.cta, badge: s.badge },
+            ['title', 'subtitle', 'cta', 'badge'],
+            sourceLang
+          )
+          updatedSlides.push({ ...s, translations: tr })
+          translatedSlides++
+        } catch { updatedSlides.push(s) }
+      }
+      // About
+      let aboutTr = null
+      if (doc.about) {
+        try {
+          aboutTr = await translateObject(
+            { hero_title: doc.about.hero_title, hero_subtitle: doc.about.hero_subtitle, history: doc.about.history, mission: doc.about.mission, vision: doc.about.vision },
+            ['hero_title', 'hero_subtitle', 'history', 'mission', 'vision'],
+            sourceLang
+          )
+        } catch {}
+      }
+      await db.collection('content').updateOne({ id: 'site' }, {
+        $set: { hero_slides: updatedSlides, ...(aboutTr ? { 'about.translations': aboutTr } : {}) }
+      })
+    }
+    return NextResponse.json({ ok: true, translatedOffers, translatedSlides })
   }
 
   // ===== MESSAGES (contact form) =====

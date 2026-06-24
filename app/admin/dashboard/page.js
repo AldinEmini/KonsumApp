@@ -160,9 +160,7 @@ function AdminDashboard() {
           {!loading && tab === 'messages' && <MessagesTab onUnreadChange={setUnreadMessages}/>}
           {!loading && tab === 'locations' && <LocationsTab/>}
           {!loading && tab === 'content' && <ContentTab/>}
-          {!loading && tab === 'settings' && (
-            <PlaceholderTab title="Cilësimet e Faqes" desc="Logo, ngjyrat, SEO, footer dhe cilësime të përgjithshme."/>
-          )}
+          {!loading && tab === 'settings' && <SettingsTab/>}
         </main>
       </div>
 
@@ -592,6 +590,142 @@ function ContentTab() {
             <label className="text-sm font-semibold">Dërgesa</label>
             <textarea rows={3} className="w-full px-3 py-2 rounded-md border" value={content.about?.delivery || ''} onChange={e=>updateField('about.delivery', e.target.value)}/>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SettingsTab() {
+  const [content, setContent] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [translating, setTranslating] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/content').then(r => r.json()).then(d => { setContent(d.content); setLoading(false) })
+  }, [])
+
+  const updateField = (path, value) => {
+    setContent(c => {
+      const next = JSON.parse(JSON.stringify(c))
+      const keys = path.split('.')
+      let obj = next
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!obj[keys[i]]) obj[keys[i]] = {}
+        obj = obj[keys[i]]
+      }
+      obj[keys[keys.length - 1]] = value
+      return next
+    })
+  }
+
+  const save = async () => {
+    setSaving(true)
+    const r = await fetch('/api/content', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) })
+    if (r.ok) toast.success('Cilësimet u ruajtën')
+    else toast.error('Dështoi')
+    setSaving(false)
+  }
+
+  const translateAll = async () => {
+    if (!confirm('Kjo do të rikthejë përkthimet për të gjitha ofertat, hero slides dhe Rreth Nesh. Mund të zgjasë 1-2 minuta. Vazhdojmë?')) return
+    setTranslating(true)
+    try {
+      const r = await fetch('/api/translate-all', { method: 'POST' })
+      const d = await r.json()
+      if (r.ok) toast.success(`U përkthyen ${d.translatedOffers} oferta dhe ${d.translatedSlides} slides`)
+      else toast.error('Dështoi')
+    } catch { toast.error('Dështoi') }
+    finally { setTranslating(false) }
+  }
+
+  if (loading) return <Loader2 className="h-6 w-6 animate-spin"/>
+  if (!content) return <p>Nuk u ngarkua.</p>
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black">Cilësimet e Faqes</h1>
+          <p className="text-muted-foreground mt-1">SEO, logo, gjuhë dhe konfigurime të përgjithshme.</p>
+        </div>
+        <Button onClick={save} disabled={saving} className="bg-[#EF7B22] hover:bg-[#C45F10]">
+          {saving ? 'Duke ruajtur...' : 'Ruaj ndryshimet'}
+        </Button>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-2xl border space-y-3">
+          <h3 className="font-black text-lg">🌐 SEO & Meta Tags</h3>
+          <div>
+            <label className="text-sm font-semibold">Titulli i faqes (Title)</label>
+            <Input value={content.seo?.title || 'Konsum Super Market - Best weekly offers'} onChange={e=>updateField('seo.title', e.target.value)}/>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">Përshkrimi (Meta Description)</label>
+            <textarea rows={3} className="w-full px-3 py-2 rounded-md border text-sm"
+              value={content.seo?.description || ''} onChange={e=>updateField('seo.description', e.target.value)}/>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">Keywords (ndara me presje)</label>
+            <Input value={content.seo?.keywords || ''} onChange={e=>updateField('seo.keywords', e.target.value)}
+              placeholder="konsum, supermarket, oferta, Maqedoni"/>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border space-y-3">
+          <h3 className="font-black text-lg">🎨 Branding & Logo</h3>
+          <div>
+            <label className="text-sm font-semibold">URL e logos (mascot/header)</label>
+            <Input value={content.branding?.logo_mascot || ''} onChange={e=>updateField('branding.logo_mascot', e.target.value)}
+              placeholder="https://..."/>
+            {content.branding?.logo_mascot && (
+              <img src={content.branding.logo_mascot} alt="" className="mt-2 h-16 object-contain border p-2 rounded"/>
+            )}
+          </div>
+          <div>
+            <label className="text-sm font-semibold">URL e logos së plotë (footer, marketing)</label>
+            <Input value={content.branding?.logo_full || ''} onChange={e=>updateField('branding.logo_full', e.target.value)}
+              placeholder="https://..."/>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">Slogani (Tagline)</label>
+            <Input value={content.site?.tagline || ''} onChange={e=>updateField('site.tagline', e.target.value)}/>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border space-y-3">
+          <h3 className="font-black text-lg">🦶 Footer</h3>
+          <div>
+            <label className="text-sm font-semibold">Teksti i copyright</label>
+            <Input value={content.footer_copyright || ''} onChange={e=>updateField('footer_copyright', e.target.value)}/>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border space-y-3">
+          <h3 className="font-black text-lg">🌍 Multi-Language</h3>
+          <p className="text-sm text-muted-foreground">Sapo shtoni ose editoni një ofertë / slide / përmbajtje, ajo përkthehet automatikisht në 3 gjuhë (EN, SQ, MK) duke përdorur AI.</p>
+          <Button onClick={translateAll} disabled={translating} variant="outline" className="border-[#EF7B22] text-[#EF7B22] hover:bg-orange-50">
+            {translating ? <Loader2 className="h-4 w-4 mr-2 animate-spin"/> : <Sparkles className="h-4 w-4 mr-2"/>}
+            {translating ? 'Duke përkthyer...' : 'Rikthe përkthimet për të gjitha'}
+          </Button>
+          <p className="text-xs text-muted-foreground">Përdore këtë nëse ke ndryshuar tekstin direkt në databazë ose dëshiron të rifreskosh të gjitha përkthimet.</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border space-y-3 md:col-span-2">
+          <h3 className="font-black text-lg">🔐 Llogaria Admin</h3>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-semibold">Email i juaj</label>
+              <Input value="aldin@konsum.mk" disabled className="bg-neutral-50"/>
+            </div>
+            <div>
+              <label className="text-sm font-semibold">Roli</label>
+              <Input value="Administrator" disabled className="bg-neutral-50"/>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">Për ndryshimin e fjalëkalimit, kontakto zhvilluesin.</p>
         </div>
       </div>
     </div>
