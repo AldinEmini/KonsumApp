@@ -3,11 +3,15 @@
 import Link from 'next/link'
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin, Clock } from 'lucide-react'
 import Logo from './Logo'
-import { SITE } from '@/lib/mockData'
+import { SITE as DEFAULT_SITE } from '@/lib/mockData'
+import { useEffect, useState } from 'react'
 import { useI18n } from '@/lib/i18n-context'
 
 export default function Footer() {
   const { t } = useI18n()
+  const [SITE, setSITE] = useState(DEFAULT_SITE)
+  const [copyright, setCopyright] = useState('')
+  useEffect(() => { fetch('/api/content').then(r=>r.json()).then(d => { if (d.content?.site) setSITE(s => ({...s, ...d.content.site})); if (d.content?.footer_copyright) setCopyright(d.content.footer_copyright) }).catch(()=>{}) }, [])
   return (
     <footer className="bg-neutral-900 text-neutral-300">
       <div className="container py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -25,7 +29,6 @@ export default function Footer() {
           <h4 className="text-white font-bold mb-4">{t('quick_links')}</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/oferta" className="hover:text-white">{t('nav_offers')}</Link></li>
-            <li><Link href="/rreth-nesh" className="hover:text-white">{t('nav_about')}</Link></li>
             <li><Link href="/kontakti" className="hover:text-white">{t('locations_label')}</Link></li>
             <li><Link href="/kontakti" className="hover:text-white">{t('contact')}</Link></li>
           </ul>
@@ -34,9 +37,8 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-bold mb-4">{t('information')}</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/rreth-nesh#politika" className="hover:text-white">{t('return_policy')}</Link></li>
-            <li><Link href="/rreth-nesh#privatesia" className="hover:text-white">{t('privacy')}</Link></li>
-            <li><Link href="/rreth-nesh#kushtet" className="hover:text-white">{t('terms')}</Link></li>
+            <li><Link href="/kontakti" className="hover:text-white">{t('phone_label')}</Link></li>
+            <li><Link href="/kontakti" className="hover:text-white">{t('our_stores')}</Link></li>
           </ul>
         </div>
 
@@ -53,7 +55,7 @@ export default function Footer() {
 
       <div className="border-t border-neutral-800">
         <div className="container py-5 flex flex-col md:flex-row items-center justify-between text-xs text-neutral-500">
-          <p>© {new Date().getFullYear()} Konsum Super Market. {t('all_rights')}</p>
+          <p>{copyright || `© ${new Date().getFullYear()} Konsum Super Market. ${t('all_rights')}`}</p>
           <p className="mt-2 md:mt-0">{t('designed_with')} ❤️ {t('in_macedonia')}</p>
         </div>
       </div>

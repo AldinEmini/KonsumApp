@@ -17,7 +17,7 @@ function Home() {
   const { t, lang } = useI18n()
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedCat, setSelectedCat] = useState('te-gjitha')
-  const [search, setSearch] = useState('')
+  const search = ''
   const [activeSlide, setActiveSlide] = useState(0)
   const [offers, setOffers] = useState([])
   const [slides, setSlides] = useState(HERO_SLIDES)
@@ -107,13 +107,6 @@ function Home() {
             <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 font-semibold">{t('weekly_offers_badge')}</Badge>
             <h2 className="text-3xl md:text-5xl font-black">{t('discover_best_prices')}</h2>
             <p className="text-muted-foreground md:text-lg">{t('offers_subtitle')}</p>
-          </div>
-
-          <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"/>
-            <Input value={search} onChange={e=>setSearch(e.target.value)}
-              placeholder={t('search_products')}
-              className="pl-12 h-14 text-base shadow-sm border-2 focus-visible:ring-2 focus-visible:ring-[#EF7B22] focus-visible:border-[#EF7B22]"/>
           </div>
 
           <div className="flex gap-2 md:gap-3 overflow-x-auto hide-scrollbar pb-2">

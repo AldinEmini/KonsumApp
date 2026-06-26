@@ -86,6 +86,32 @@ function KontaktiPage() {
 
       <section className="py-10">
         <div className="container">
+          {/* Working hours card */}
+          {site.hours_detailed && (
+            <div className="bg-white border-2 border-orange-100 rounded-2xl p-6 mb-8 max-w-3xl mx-auto">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-11 h-11 rounded-xl konsum-gradient text-white flex items-center justify-center">
+                  <Clock className="h-5 w-5"/>
+                </div>
+                <h2 className="text-2xl font-black">{t('detailed_hours')}</h2>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-3">
+                <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
+                  <div className="text-xs uppercase font-bold text-[#EF7B22] mb-1">{t('weekdays_label')}</div>
+                  <div className="text-xl font-black text-neutral-800">{site.hours_detailed.weekdays}</div>
+                </div>
+                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                  <div className="text-xs uppercase font-bold text-[#20A33A] mb-1">{t('sunday_label')}</div>
+                  <div className="text-xl font-black text-neutral-800">{site.hours_detailed.sunday}</div>
+                </div>
+                <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-200">
+                  <div className="text-xs uppercase font-bold text-neutral-600 mb-1">{t('holidays_label')}</div>
+                  <div className="text-xl font-black text-neutral-800">{site.hours_detailed.holidays}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-end justify-between mb-6">
             <div>
               <Badge className="bg-orange-50 text-[#EF7B22] hover:bg-orange-50 mb-2">{locations.length} {t('locations_label')}</Badge>

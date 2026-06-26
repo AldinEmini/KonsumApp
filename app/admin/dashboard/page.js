@@ -562,8 +562,47 @@ function ContentTab() {
           </div>
         </div>
 
+        <div className="bg-white p-6 rounded-2xl border space-y-3">
+          <h3 className="font-black text-lg">🕒 Orari i Punës</h3>
+          <p className="text-xs text-muted-foreground">Këto shfaqen në faqen Kontakti.</p>
+          <div>
+            <label className="text-sm font-semibold">E Hënë - E Shtunë</label>
+            <Input value={content.site?.hours_detailed?.weekdays || ''}
+              onChange={e=>updateField('site.hours_detailed.weekdays', e.target.value)}
+              placeholder="07:00 - 22:00"/>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">E Diel</label>
+            <Input value={content.site?.hours_detailed?.sunday || ''}
+              onChange={e=>updateField('site.hours_detailed.sunday', e.target.value)}
+              placeholder="08:00 - 14:00"/>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">Festat shtetërore</label>
+            <Input value={content.site?.hours_detailed?.holidays || ''}
+              onChange={e=>updateField('site.hours_detailed.holidays', e.target.value)}
+              placeholder="08:00 - 14:00"/>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">Orari i shkurtër (header/footer)</label>
+            <Input value={content.site?.hours || ''} onChange={e=>updateField('site.hours', e.target.value)}
+              placeholder="Mon-Sat: 07:00-22:00 | Sun: 08:00-14:00"/>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border space-y-3">
+          <h3 className="font-black text-lg">🦶 Header & Footer</h3>
+          <div>
+            <label className="text-sm font-semibold">Footer Copyright</label>
+            <Input value={content.footer_copyright || ''} onChange={e=>updateField('footer_copyright', e.target.value)}
+              placeholder="© 2026 Konsum Super Market..."/>
+          </div>
+          <p className="text-xs text-muted-foreground">Header dhe footer marrin telefon, email, adresë, social dhe orar nga seksionet sipër.</p>
+        </div>
+
         <div className="bg-white p-6 rounded-2xl border space-y-3 md:col-span-2">
-          <h3 className="font-black text-lg">Rreth Nesh</h3>
+          <h3 className="font-black text-lg">ℹ️ Rreth Nesh (opsional, vetëm për SEO)</h3>
+          <p className="text-xs text-muted-foreground mb-2">Këto fusha nuk shfaqen më në faqe publike, por mund t'i përdorni në të ardhmen nëse riktheni faqen.</p>
           <div>
             <label className="text-sm font-semibold">Titulli</label>
             <Input value={content.about?.hero_title || ''} onChange={e=>updateField('about.hero_title', e.target.value)}/>

@@ -13,7 +13,7 @@ import { useI18n } from '@/lib/i18n-context'
 
 function OfertaPage() {
   const { t, lang } = useI18n()
-  const [search, setSearch] = useState('')
+  const search = ''
   const [cat, setCat] = useState('te-gjitha')
   const [sort, setSort] = useState('discount')
   const [offers, setOffers] = useState([])
@@ -54,11 +54,7 @@ function OfertaPage() {
       <section className="bg-white border-b sticky top-[80px] md:top-[128px] z-30 shadow-sm">
         <div className="container py-4 space-y-3">
           <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
-              <Input value={search} onChange={e=>setSearch(e.target.value)}
-                placeholder={t('search_placeholder')} className="pl-10 h-11"/>
-            </div>
+<div className="flex-1"/>
             <select value={sort} onChange={e=>setSort(e.target.value)}
               className="h-11 px-4 rounded-md border bg-white text-sm font-medium">
               <option value="discount">{t('sort_discount')}</option>
@@ -66,8 +62,8 @@ function OfertaPage() {
               <option value="price-high">{t('sort_price_high')}</option>
               <option value="name">{t('sort_name')}</option>
             </select>
-            {(search || cat !== 'te-gjitha') && (
-              <Button variant="outline" onClick={() => {setSearch(''); setCat('te-gjitha')}}>
+            {cat !== 'te-gjitha' && (
+              <Button variant="outline" onClick={() => setCat('te-gjitha')}>
                 <X className="h-4 w-4 mr-1"/> {t('clear')}
               </Button>
             )}
